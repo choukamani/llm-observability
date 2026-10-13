@@ -1,0 +1,31 @@
+{
+  "environment": {
+    "python": "3.12.15",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "processor": "",
+    "iterations": 20000
+  },
+  "results": [
+    {
+      "scenario": "no instrumentation",
+      "p50_us": 0.11,
+      "p95_us": 0.19,
+      "p99_us": 0.27,
+      "mean_us": 0.14
+    },
+    {
+      "scenario": "llmobs, chain only (no sinks)",
+      "p50_us": 18.42,
+      "p95_us": 51.76,
+      "p99_us": 146.05,
+      "mean_us": 25.18
+    },
+    {
+      "scenario": "llmobs + OTel SDK (spans + metrics)",
+      "p50_us": 215.47,
+      "p95_us": 620.2,
+      "p99_us": 1572.86,
+      "mean_us": 281.95
+    }
+  ]
+}
