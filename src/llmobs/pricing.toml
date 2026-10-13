@@ -1,0 +1,40 @@
+# Prices in USD per 1M tokens, used for *estimated* cost only.
+# Provider prices change often: this file is a snapshot of public list prices,
+# not a billing source. Ship your own file with `PriceTable.from_toml(...)`.
+
+[meta]
+as_of = "2024-10"
+sources = [
+  "https://openai.com/api/pricing/",
+  "https://mistral.ai/pricing",
+]
+
+[models."openai/gpt-4o-mini"]
+input = 0.15
+output = 0.60
+
+[models."openai/gpt-4o"]
+input = 2.50
+output = 10.00
+
+[models."azure_openai/gpt-4o-mini"]
+input = 0.15
+output = 0.60
+
+[models."mistral/mistral-large"]
+input = 2.00
+output = 6.00
+
+# Local models: no per-token cost.
+[models."ollama/*"]
+input = 0.0
+output = 0.0
+
+# Fictitious prices for the bundled fake provider, so the demo dashboard shows costs.
+[models."fake/fake-small"]
+input = 0.20
+output = 0.80
+
+[models."fake/fake-large"]
+input = 3.00
+output = 12.00
