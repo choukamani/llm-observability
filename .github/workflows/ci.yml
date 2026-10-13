@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, types, tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.14"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Ruff
+        run: |
+          uv run ruff check . --output-format=github
+          uv run ruff format --check .
+      - name: Mypy (strict)
+        run: uv run mypy
+      - name: Pytest
+        run: uv run pytest --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  docker:
+    name: Docker build + compose smoke test
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: llmobs-demo:local
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Start stack
+        run: docker compose up -d --no-build --wait demo-app otel-collector prometheus
+      - name: Metrics reach Prometheus
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf -X POST localhost:8000/v1/chat -H 'content-type: application/json' \
+              -H 'x-tenant: ci' -d '{"prompt":"hello"}' > /dev/null || true
+            if curl -s 'localhost:9090/api/v1/query?query=gen_ai_client_operation_duration_seconds_count' \
+              | grep -q '"llm_tenant":"ci"'; then echo "metrics OK"; exit 0; fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+      - if: always()
+        run: docker compose down
