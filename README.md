@@ -1,6 +1,6 @@
 # llmobs: OpenTelemetry observability for LLM calls
 
-[![CI](https://github.com/amani-glitch/llm-observability/actions/workflows/ci.yml/badge.svg)](https://github.com/amani-glitch/llm-observability/actions/workflows/ci.yml)
+[![CI](https://github.com/choukamani/llm-observability/actions/workflows/ci.yml/badge.svg)](https://github.com/choukamani/llm-observability/actions/workflows/ci.yml)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
 ![mypy strict](https://img.shields.io/badge/mypy-strict-2a6db2)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
@@ -39,7 +39,7 @@ Vendor tracing SDKs solve part of this but create a second telemetry silo. `llmo
 ## Quick start (3 commands)
 
 ```bash
-git clone https://github.com/amani-glitch/llm-observability && cd llm-observability
+git clone https://github.com/choukamani/llm-observability && cd llm-observability
 cp .env.example .env          # optional: change ports
 make up                       # or: make up ENGINE=podman
 ```
